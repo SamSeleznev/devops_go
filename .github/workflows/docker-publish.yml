@@ -22,4 +22,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: username/repo:latest
+        tags: simsti97/docker-publish:latest
