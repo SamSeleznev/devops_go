@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Останавливаем и удаляем контейнер
+# stop&dlt container
 ssh ubvmaster@192.168.1.102 "docker stop webserv"
 ssh ubvmaster@192.168.1.102 "docker rm webserv"
 
-# Удаляем образ
+# dlt image
 ssh ubvmaster@192.168.1.102 "docker rmi webserv"
 
-# Удаляем приложение
+# dlt app
 ssh ubvmaster@192.168.1.102 "rm -rf /home/ubvmaster/devops_go"
 
-echo "Все действия, выполненные предыдущим скриптом, отменены."
+echo "DONE."
