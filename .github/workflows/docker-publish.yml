@@ -1,4 +1,4 @@
-name: Docker Publish
+name: Docker Publish and Deploy
 
 on:
   push:
@@ -22,4 +22,15 @@ jobs:
       with:
         context: .
         push: true
-        tags: simsti97/docker-publish:latest
+        tags: ${{ secrets.DOCKER_IMAGE_TAG }}
+    - name: Deploy webserv.go to main server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.MASTER_SERVER_HOST }}
+        username: ${{ secrets.MASTER_SERVER_USER }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ${{ secrets.DEVOPS_GO_PATH }}
+          bash deploy.sh
+          cd ${{ secrets.ANSIBLE_PATH }}
+          ansible-playbook webserv.yaml
