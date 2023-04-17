@@ -18,6 +18,7 @@ jobs:
         host: ${{ secrets.MASTER_SERVER_HOST }}
         username: ${{ secrets.MASTER_SERVER_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
         script: |
           cd ${{ secrets.DEVOPS_GO_PATH }}
           bash deploy.sh
