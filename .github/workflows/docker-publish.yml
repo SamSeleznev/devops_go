@@ -28,7 +28,7 @@ jobs:
       with:
         host: ${{ secrets.MASTER_SERVER_HOST }}
         username: ${{ secrets.MASTER_SERVER_USER }}
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd ${{ secrets.DEVOPS_GO_PATH }}
           bash deploy.sh
