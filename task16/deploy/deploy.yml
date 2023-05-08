@@ -1,0 +1,33 @@
+---
+- name: Deploy API and Web UI containers
+  hosts: STAGING_SERVERS_WEB
+  become: yes
+  tasks:
+    - name: Ensure Docker is installed
+      ansible.builtin.package:
+        name: docker
+        state: present
+
+    - name: Ensure Docker is running
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Deploy API container
+      docker_container:
+        name: api
+        image: simsti97/api:latest
+        state: started
+        recreate: yes
+        ports:
+          - "80:80"
+
+    - name: Deploy Web UI container
+      docker_container:
+        name: webui
+        image: simsti97/webui:latest
+        state: started
+        recreate: yes
+        ports:
+          - "8080:80"
