@@ -1,0 +1,39 @@
+---
+- name: Deploy containers on target machine
+  hosts: target_machine
+  become: yes
+  tasks:
+    - name: Install Docker
+      ansible.builtin.package:
+        name: docker.io
+        state: present
+
+    - name: Ensure Docker service is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Login to Docker Hub
+      ansible.builtin.docker_login:
+        username: "{{ docker_username }}"
+        password: "{{ docker_password }}"
+        registry_url: https://index.docker.io/v1/
+
+    - name: Run API container
+      ansible.builtin.docker_container:
+        name: api
+        image: "simsti97/api:latest"
+        state: started
+        restart_policy: always
+        ports:
+          - "80:80"
+
+    - name: Run Web UI container
+      ansible.builtin.docker_container:
+        name: webui
+        image: "simsti97/webui:latest"
+        state: started
+        restart_policy: always
+        ports:
+          - "8080:80"
