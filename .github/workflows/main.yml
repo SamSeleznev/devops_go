@@ -53,4 +53,4 @@ jobs:
           pip install ansible
 
       - name: Deploy containers to target machine
-        run: ansible-playbook -i deploy/inventory.ini deploy/deploy.yml -e "ansible_python_interpreter=/usr/bin/python3"
+        run: ansible-playbook -i ./task16/deploy/inventory.ini ./task16/deploy/deploy.yml -e "ansible_python_interpreter=/usr/bin/python3"
