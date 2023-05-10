@@ -23,15 +23,14 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./task16/api
-          file: api/Dockerfile-api
           push: true
           tags: ${{ secrets.DOCKER_IMAGE_TAG }}/api:latest
+          
 
       - name: Build and push Web UI Docker image
         uses: docker/build-push-action@v2
         with:
           context: ./task16/webui
-          file: webui/Dockerfile-webui
           push: true
           tags: ${{ secrets.DOCKER_IMAGE_TAG }}/webui:latest
 
