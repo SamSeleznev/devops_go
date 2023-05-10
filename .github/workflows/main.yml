@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'task16/**'
 
 jobs:
   build_and_push:
