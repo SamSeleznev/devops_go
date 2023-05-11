@@ -58,4 +58,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Deploy containers to target machine
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
         run: ansible-playbook -i ./task16/deploy/inventory.ini ./task16/deploy/deploy.yml -e "ansible_python_interpreter=/usr/bin/python3"
