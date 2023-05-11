@@ -53,18 +53,9 @@ jobs:
 
       - name: Setup SSH key
         run: |
-          mkdir -p ~/.ssh
+          mkdir -p ~/.ssh/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Add remote host to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -t rsa ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
-
       - name: Deploy containers to target machine
-        run: ansible-playbook -i ./task16/deploy/inventory.ini ./task16/deploy/deploy.yml -e "ansible_python_interpreter=/usr/bin/python3"
-        
-      - name: Remove SSH key file
-        run: rm -f ~/.ssh/id_rsa
-
+        run: ansible-playbook -i deploy/inventory.ini deploy/deploy.yml -e "ansible_python_interpreter=/usr/bin/python3"
