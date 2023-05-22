@@ -16,22 +16,20 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push API Docker image
         uses: docker/build-push-action@v2
         with:
-          context: api
-          file: api/Dockerfile-api
+          context: ./task16/api
           push: true
           tags: ${{ secrets.DOCKER_IMAGE_TAG }}/api:latest
 
       - name: Build and push Web UI Docker image
         uses: docker/build-push-action@v2
         with:
-          context: webui
-          file: webui/Dockerfile-webui
+          context: ./task16/webui
           push: true
           tags: ${{ secrets.DOCKER_IMAGE_TAG }}/webui:latest
 
@@ -53,5 +51,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
       - name: Deploy containers to target machine
-        run: ansible-playbook -i deploy/inventory.ini deploy/deploy.yml -e "ansible_python_interpreter=/usr/bin/python3"
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
+        run: ansible-playbook -i ./task16/deploy/inventory.ini ./task16/deploy/deploy.yml -e "ansible_python_interpreter=/usr/bin/python3"
