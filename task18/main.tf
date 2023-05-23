@@ -12,6 +12,12 @@ resource "aws_instance" "ubuntuserver" {
     Project = "Task18Terraform"
   }
 }
+
+resource "local_file" "instance_ip" {
+  filename = "instance_ip.txt"
+  content  = aws_instance.ubuntuserver.public_ip
+}
+
 output "instance_ip_addr" {
   description = "The public IP address of the EC2 instance"
   value       = aws_instance.ubuntuserver.public_ip
