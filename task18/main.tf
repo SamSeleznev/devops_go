@@ -1,5 +1,5 @@
 provider "aws" {
-  //use data aws cli
+  region = "ap-northeast-2"
 }
 
 resource "aws_instance" "ubuntuserver" {

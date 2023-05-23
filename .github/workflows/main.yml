@@ -57,30 +57,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-
-      - name: Terraform Init
-        run: |
-          cd ./task18
-          terraform init
-
-      - name: Terraform Apply
-        id: terraform
-        run: |
-          cd ./task18
-          terraform apply -auto-approve
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Create inventory file
-        run: |
-          IP_ADDRESS=$(cat instance_ip.txt)
-          echo "[STAGING_SERVERS_WEB]" > ./task16/deploy/inventory.ini
-          echo "$IP_ADDRESS ansible_user=ubuntu" >> ./task16/deploy/inventory.ini
-        
-
       - name: Deploy containers to target machine
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
