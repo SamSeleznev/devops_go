@@ -51,12 +51,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
 
@@ -79,6 +73,12 @@ jobs:
         with:
           name: instance_ip
           path: task18/instance_ip.txt
+        
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
         
       - name: Load IP address from artifact
         uses: actions/download-artifact@v2
