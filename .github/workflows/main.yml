@@ -77,7 +77,7 @@ jobs:
       - name: Create inventory file
         run: |
           echo "[STAGING_SERVERS_WEB]" > ./task16/deploy/inventory.ini
-          echo "${{ steps.terraform.outputs.instance_ip_addr }} ansible_user=ubuntu" >> ./task16/deploy/inventory.ini
+          echo "${{ steps.terraform.outputs.instance_ip.outputs.instance_ip_addr }} ansible_user=ubuntu" >> ./task16/deploy/inventory.ini
 
       - name: Deploy containers to target machine
         env:
