@@ -5,6 +5,7 @@ provider "aws" {
 resource "aws_instance" "ubuntuserver" {
   ami           = "ami-04cebc8d6c4f297a3"
   instance_type = "t2.micro"
+  vpc_security_group_ids = ["sg-04882473cf1ebd81d"]
 
   tags = {
     Name    = "UbuntuServer"
