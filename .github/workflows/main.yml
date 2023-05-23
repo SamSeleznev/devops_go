@@ -78,17 +78,17 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: instance_ip
-          path: instance_ip.txt
+          path: task18/instance_ip.txt
         
       - name: Load IP address from artifact
         uses: actions/download-artifact@v2
         with:
           name: instance_ip
-          path: .
+          path: task18/
         
       - name: Create inventory file
         run: |
-          IP_ADDRESS=$(cat instance_ip.txt)
+          IP_ADDRESS=$(cat task18/instance_ip.txt)
           echo "[STAGING_SERVERS_WEB]" > ./task16/deploy/inventory.ini
           echo "$IP_ADDRESS ansible_user=ubuntu" >> ./task16/deploy/inventory.ini               
 

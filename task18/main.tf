@@ -14,7 +14,7 @@ resource "aws_instance" "ubuntuserver" {
 }
 
 resource "local_file" "instance_ip" {
-  filename = "instance_ip.txt"
+  filename = "${path.module}/instance_ip.txt"
   content  = aws_instance.ubuntuserver.public_ip
 }
 
