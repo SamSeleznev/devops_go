@@ -1,8 +1,14 @@
 ---
 - name: Deploy API and Web UI containers
   hosts: STAGING_SERVERS_WEB
-  become: yes
+  gather_facts: no
+
   tasks:
+    - name: Wait for SSH to be available
+      wait_for_connection:
+        timeout: 600
+        delay: 60
+
     - name: Ensure Docker is installed
       ansible.builtin.package:
         name: docker
