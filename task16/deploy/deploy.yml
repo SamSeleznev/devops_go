@@ -21,8 +21,7 @@
     - name: Install Docker
       ansible.builtin.shell:
         cmd: curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
-        args:
-          creates: /usr/bin/docker
+        creates: /usr/bin/docker
 
     - name: Ensure Docker is running
       ansible.builtin.systemd:
