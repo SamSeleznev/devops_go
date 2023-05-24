@@ -2,13 +2,16 @@
 - name: Deploy API and Web UI containers
   hosts: STAGING_SERVERS_WEB
   become: yes
-  gather_facts: no  # to skip the initial fact gathering
+  gather_facts: no
 
   pre_tasks:
     - name: Wait for instance to become reachable
       wait_for_connection:
         delay: 30
         timeout: 300
+
+    - name: Gathering Facts
+      setup:
 
   tasks:
     - name: Update APT package cache
@@ -26,7 +29,7 @@
 
     - name: Add Docker APT repository
       ansible.builtin.apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu/{{ ansible_distribution | lower }} stable
 
     - name: Install Docker CE
       ansible.builtin.apt:
