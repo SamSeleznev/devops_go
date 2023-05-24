@@ -18,23 +18,11 @@
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Install prerequisites for Docker repository
-      ansible.builtin.apt:
-        name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
-        update_cache: yes
-
-    - name: Add Docker GPG key
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-
-    - name: Add Docker APT repository
-      ansible.builtin.apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu/{{ ansible_distribution | lower }} stable
-
-    - name: Install Docker CE
-      ansible.builtin.apt:
-        name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
-        update_cache: yes
+    - name: Install Docker
+      ansible.builtin.shell:
+        cmd: curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
+        args:
+          creates: /usr/bin/docker
 
     - name: Ensure Docker is running
       ansible.builtin.systemd:
