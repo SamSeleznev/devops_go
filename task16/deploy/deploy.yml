@@ -1,18 +1,37 @@
 ---
 - name: Deploy API and Web UI containers
   hosts: STAGING_SERVERS_WEB
-  gather_facts: no
+  become: yes
+  gather_facts: no  # to skip the initial fact gathering
+
+  pre_tasks:
+    - name: Wait for instance to become reachable
+      wait_for_connection:
+        delay: 30
+        timeout: 300
 
   tasks:
-    - name: Wait for SSH to be available
-      wait_for_connection:
-        timeout: 300
-        delay: 30
+    - name: Update APT package cache
+      ansible.builtin.apt:
+        update_cache: yes
 
-    - name: Ensure Docker is installed
-      ansible.builtin.package:
-        name: docker
-        state: present
+    - name: Install prerequisites for Docker repository
+      ansible.builtin.apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
+        update_cache: yes
+
+    - name: Add Docker GPG key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+
+    - name: Add Docker APT repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+
+    - name: Install Docker CE
+      ansible.builtin.apt:
+        name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+        update_cache: yes
 
     - name: Ensure Docker is running
       ansible.builtin.systemd:
