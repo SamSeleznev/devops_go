@@ -7,22 +7,12 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-sdk-go/aws"
-    "github.com/aws/aws-sdk-go/aws/session"
-    "github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/rs/cors"
 )
 
 func handlerHello(w http.ResponseWriter, r *http.Request) {
-	// Разрешаем запросы с указанных доменов
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	// Обрабатываем предварительную проверку CORS запросов
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-
 	var data struct {
 		Name string `json:"name"`
 	}
@@ -36,6 +26,7 @@ func handlerHello(w http.ResponseWriter, r *http.Request) {
 	message := fmt.Sprintf("Hello, %s!", data.Name)
 	fmt.Fprintln(w, message)
 }
+
 func handlerCreateEC2Instance(w http.ResponseWriter, r *http.Request) {
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String("ap-northeast-2"),
@@ -105,12 +96,17 @@ func handlerTerminateEC2Instance(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/api/hello", handlerHello)
-	http.HandleFunc("/api/ec2/create", handlerCreateEC2Instance)
-	http.HandleFunc("/api/ec2/terminate", handlerTerminateEC2Instance)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/api/hello", handlerHello)
+	mux.HandleFunc("/api/ec2/create", handlerCreateEC2Instance)
+	mux.HandleFunc("/api/ec2/terminate", handlerTerminateEC2Instance)
+
+	// Wrap the server with CORS
+	handler := cors.Default().Handler(mux)
 
 	log.Println("Starting server on port 80...")
-	err := http.ListenAndServe(":80", nil)
+	err := http.ListenAndServe(":80", handler)
 	if err != nil {
 		log.Fatal("Error starting server: ", err)
 	}
