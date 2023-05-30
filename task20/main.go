@@ -102,7 +102,6 @@ func main() {
 	mux.HandleFunc("/api/ec2/create", handlerCreateEC2Instance)
 	mux.HandleFunc("/api/ec2/terminate", handlerTerminateEC2Instance)
 
-	// Wrap the server with CORS
 	handler := cors.Default().Handler(mux)
 
 	log.Println("Starting server on port 80...")
