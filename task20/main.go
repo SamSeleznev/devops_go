@@ -1,16 +1,23 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+
+	_ "github.com/lib/pq"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/rs/cors"
 )
+
+// Global SQL DB connection
+var db *sql.DB
 
 func handlerHello(w http.ResponseWriter, r *http.Request) {
 	var data struct {
@@ -61,7 +68,15 @@ func handlerCreateEC2Instance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(runResult.Instances[0].InstanceId)
+	instanceID := aws.StringValue(runResult.Instances[0].InstanceId)
+
+	_, err = db.Exec("INSERT INTO ec2_instances (id) VALUES ($1)", instanceID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(instanceID)
 }
 
 func handlerTerminateEC2Instance(w http.ResponseWriter, r *http.Request) {
@@ -92,10 +107,26 @@ func handlerTerminateEC2Instance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, err = db.Exec("DELETE FROM ec2_instances WHERE id = $1", data.InstanceId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Write([]byte("Instance terminated successfully!"))
 }
 
 func main() {
+	var err error
+	dbUser := os.Getenv("DB_USER")
+	dbPass := os.Getenv("DB_PASS")
+	dbName := os.Getenv("DB_NAME")
+	dbHost := os.Getenv("DB_HOST")
+
+	connStr := fmt.Sprintf("user=%s password=%s dbname=%s host=%s sslmode=disable", dbUser, dbPass, dbName, dbHost)
+	db, err = sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatalf("Error connecting to database: %v", err)}
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/api/hello", handlerHello)
@@ -105,7 +136,7 @@ func main() {
 	handler := cors.Default().Handler(mux)
 
 	log.Println("Starting server on port 80...")
-	err := http.ListenAndServe(":80", handler)
+	err = http.ListenAndServe(":80", handler)
 	if err != nil {
 		log.Fatal("Error starting server: ", err)
 	}
