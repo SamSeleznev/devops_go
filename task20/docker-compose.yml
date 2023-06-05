@@ -1,0 +1,21 @@
+version: "3"
+services:
+  api:
+    build:
+      context: C:\Users\sseleznev\git\devops_go\task20\
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+  web:
+    build:
+      context: C:\Users\sseleznev\git\devops_go\task16\webui\
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: devops123
+      POSTGRES_USER: postgres
+      POSTGRES_DB: ec2_instances_db
+

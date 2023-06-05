@@ -16,7 +16,6 @@ import (
 	"github.com/rs/cors"
 )
 
-// Global SQL DB connection
 var db *sql.DB
 
 func handlerHello(w http.ResponseWriter, r *http.Request) {
