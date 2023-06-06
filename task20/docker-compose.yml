@@ -1,21 +1,42 @@
 version: "3"
 services:
+  db:
+    image: postgres:15.1
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db-init:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-network
   api:
-    build:
-      context: C:\Users\sseleznev\git\devops_go\task20\
-      dockerfile: Dockerfile
+    build: ./api
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     ports:
       - "80:80"
+    depends_on:
+      - db
+    networks:
+      - backend-network
   web:
-    build:
-      context: C:\Users\sseleznev\git\devops_go\task16\webui\
-      dockerfile: Dockerfile
+    build: ./web
     ports:
-      - "3000:3000"
-  db:
-    image: postgres
-    environment:
-      POSTGRES_PASSWORD: devops123
-      POSTGRES_USER: postgres
-      POSTGRES_DB: ec2_instances_db
+      - "8080:80"
+    networks:
+      - backend-network
 
+volumes:
+  db_data:
+
+networks:
+  backend-network:
