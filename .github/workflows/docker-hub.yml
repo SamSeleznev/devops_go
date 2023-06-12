@@ -29,6 +29,6 @@ jobs:
       - name: Build and push Web UI Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ./task20/webui
+          context: ./task20/web
           push: true
           tags: ${{ secrets.DOCKER_IMAGE_TAG }}/webui:latest
