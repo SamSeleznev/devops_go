@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fullstack-postgres
+  labels:
+    app: fullstack-postgres
+spec:
+  selector:
+    matchLabels:
+      app: fullstack-postgres
+      tier: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fullstack-postgres
+        tier: postgres
+    spec:
+      containers:
+        - image: simsti97/postgres-db:latest
+          name: postgres
+          imagePullPolicy: "IfNotPresent"
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+
+          ports:
+            - containerPort: 5432
+              name: postgres
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+            requests:
+              cpu: "0.5"
+              memory: "512Mi"
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-persistent-storage
+      volumes:
+        - name: postgres-persistent-storage
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fullstack-postgres
+  labels:
+    app: fullstack-postgres
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+  selector:
+    app: fullstack-postgres
+    tier: postgres
