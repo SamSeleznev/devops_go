@@ -49,9 +49,9 @@ metadata:
   labels:
     app: fullstack-postgres
 spec:
-  type: NodePort
   ports:
     - port: 5432
   selector:
     app: fullstack-postgres
     tier: postgres
+  type: NodePort
