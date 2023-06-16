@@ -1,2 +1,3 @@
 task20/.env
 task20/configmap.yaml
+task20/postgres-secret.yaml
