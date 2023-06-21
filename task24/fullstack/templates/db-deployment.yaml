@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.service.db.name }}  
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.service.db.name }}
+      tier: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.service.db.name }}
+        tier: postgres
+    spec:
+      containers:
+        - image: {{ .Values.image.db }}
+          name: postgres
+          imagePullPolicy: "IfNotPresent"
+          envFrom:
+            - secretRef:
+                name: {{ .Values.env.secretName }}
+          ports:
+            - containerPort: {{ .Values.service.db.port }}
+              name: postgres
+          resources:
+            limits:
+              cpu: {{ .Values.resources.limit.cpu }}
+              memory: {{ .Values.resources.limit.memory }}
+            requests:
+              cpu: {{ .Values.resources.request.cpu }}
+              memory: {{ .Values.resources.request.memory }}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: {{ .Values.persistence.name }}
+      volumes:
+        - name: {{ .Values.persistence.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.name }}-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.db.name }}
+  labels:
+    app: {{ .Values.service.db.name }}
+spec:
+  ports:
+    - port: {{ .Values.service.db.port }}
+  selector:
+    app: {{ .Values.service.db.name }}
+    tier: postgres
+  type: {{ .Values.service.db.type }}

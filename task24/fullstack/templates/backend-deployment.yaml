@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.service.backend.name }}  
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.service.backend.name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.service.backend.name }}
+    spec:
+      containers:
+        - name: {{ .Values.service.backend.name }}  
+          image: {{ .Values.image.backend }}
+          ports:
+            - containerPort: {{ .Values.service.backend.port }} 
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.secretName }}
+                  key: DB_HOST
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.secretName }}
+                  key: DB_USER
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.secretName }}
+                  key: DB_PASS
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.secretName }}
+                  key: DB_NAME
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.secretName }}
+                  key: DB_PORT
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.secretName }}
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.secretName }}
+                  key: AWS_SECRET_ACCESS_KEY
+          resources: 
+            requests: 
+              cpu: {{ .Values.resources.request.cpu }}
+              memory: {{ .Values.resources.request.memory }}
+            limits:  
+              cpu: {{ .Values.resources.limit.cpu }}
+              memory: {{ .Values.resources.limit.memory }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.backend.name }}
+spec:
+  selector:
+    app: {{ .Values.service.backend.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.backend.port }}
+      targetPort: {{ .Values.service.backend.port }}
+      nodePort: {{ .Values.nodePort.backend }}
+  type: {{ .Values.service.backend.type }}
