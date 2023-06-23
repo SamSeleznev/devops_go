@@ -1,0 +1,47 @@
+# Default values for fullstack.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image: 
+  backend: simsti97/api:latest
+  db: simsti97/postgres-db:latest
+  frontend: simsti97/webui:latest
+
+service:
+  backend:
+    name: api-service
+    type: NodePort
+    port: 80
+  db:
+    name: fullstack-postgres
+    type: NodePort
+    port: 5432
+  frontend:
+    name: ui-service
+    type: NodePort
+    port: 80
+
+env:
+  secretName: postgres-secret 
+
+resources:
+  request: 
+    cpu: 0.5
+    memory: 512Mi
+  limit: 
+    cpu: 1
+    memory: 1Gi
+
+persistence: 
+  enabled: true
+  name: postgres-pv-volume
+  type: local
+  storageClass: manual 
+  accessMode: ReadWriteMany
+  size: 5Gi
+
+nodePort: 
+  backend: 30001
+  frontend: 30002

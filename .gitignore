@@ -1,5 +1,5 @@
 task20/.env
 task20/configmap.yaml
-task24/postgres-secret.yaml
-task24/fullstack-app/templates/postgres-secret.yaml
-task24/fullstack/templates/postgres-secret.yaml
+task25_helm_local/fullstack/templates/postgres-secret.yaml
+task26_helm_cicd/fullstack/templates/postgres-secret.yaml
+task24_k8s/postgres-secret.yaml
