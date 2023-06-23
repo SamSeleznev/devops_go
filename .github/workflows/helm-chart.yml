@@ -31,4 +31,4 @@ jobs:
 
     - name: Deploy to Minikube
       run: |
-        helm upgrade --install fullstack ./task26_helm_cicd --namespace default
+        helm upgrade --install fullstack-chart ./task26_helm_cicd --namespace default
