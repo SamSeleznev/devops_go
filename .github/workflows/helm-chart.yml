@@ -31,4 +31,14 @@ jobs:
 
     - name: Deploy to Minikube
       run: |
-        helm upgrade --install fullstack-chart ./task26_helm_cicd/fullstack --namespace default
+        helm upgrade --install fullstack-chart ./task26_helm_cicd/fullstack --namespace default \
+          --set postgres_user=${{ secrets.POSTGRES_USER }} \
+          --set postgres_password=${{ secrets.POSTGRES_PASSWORD }} \
+          --set postgres_db=${{ secrets.POSTGRES_DB }} \
+          --set db_host=${{ secrets.DB_HOST }} \
+          --set db_user=${{ secrets.DB_USER }} \
+          --set db_pass=${{ secrets.DB_PASS }} \
+          --set db_name=${{ secrets.DB_NAME }} \
+          --set db_port=${{ secrets.DB_PORT }} \
+          --set aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} \
+          --set aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
