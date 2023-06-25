@@ -39,6 +39,6 @@ jobs:
           --set db_user=${{ secrets.DB_USER }} \
           --set db_pass=${{ secrets.DB_PASS }} \
           --set db_name=${{ secrets.DB_NAME }} \
-          --set db_port=${{ secrets.DB_PORT }} \
+          --set db_port="${{ secrets.DB_PORT }}" \
           --set aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }} \
           --set aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
