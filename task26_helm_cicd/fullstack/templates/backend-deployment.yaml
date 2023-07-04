@@ -24,20 +24,11 @@ spec:
                   name: {{ .Values.env.secretName }}
                   key: DB_HOST
             - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.env.secretName }}
-                  key: DB_USER
+              value: {{ .Values.postgres.user }}
             - name: DB_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.env.secretName }}
-                  key: DB_PASS
+              value: {{ .Values.postgres.password }}
             - name: DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.env.secretName }}
-                  key: DB_NAME
+              value: {{ .Values.postgres.db }}
             - name: DB_PORT
               valueFrom:
                 secretKeyRef:
@@ -60,17 +51,3 @@ spec:
             limits:  
               cpu: {{ .Values.resources.limit.cpu }}
               memory: {{ .Values.resources.limit.memory }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Values.service.backend.name }}
-spec:
-  selector:
-    app: {{ .Values.service.backend.name }}
-  ports:
-    - protocol: TCP
-      port: {{ .Values.service.backend.port }}
-      targetPort: {{ .Values.service.backend.port }}
-      nodePort: {{ .Values.nodePort.backend }}
-  type: {{ .Values.service.backend.type }}

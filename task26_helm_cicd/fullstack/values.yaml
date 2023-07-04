@@ -1,3 +1,7 @@
+# Default values for fullstack.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
 replicaCount: 1
 
 image: 
@@ -20,17 +24,7 @@ service:
     port: 80
 
 env:
-  secretName: postgres-secret
-  postgres_user: ""
-  postgres_password: ""
-  postgres_db: ""
-  db_host: ""
-  db_user: ""
-  db_pass: ""
-  db_name: ""
-  db_port: ""
-  aws_access_key_id: ""
-  aws_secret_access_key: ""
+  secretName: postgres-secret 
 
 resources:
   request: 
@@ -51,3 +45,8 @@ persistence:
 nodePort: 
   backend: 30001
   frontend: 30002
+
+postgres:
+  user: ""
+  password: ""
+  db: ""
